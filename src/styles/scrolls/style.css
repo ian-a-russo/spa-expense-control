@@ -1,0 +1,39 @@
+::-webkit-scrollbar {
+  width: 2px;
+  height: 2px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgb(var(--v-theme-background-lighten-1));
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgb(var(--v-theme-line-border));
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgb(var(--v-theme-line-border-darken-1));
+}
+
+.scrollable-md {
+  overflow-y: auto !important;
+  max-height: 15rem;
+}
+
+.scrollable-lg {
+  overflow-y: auto !important;
+  max-height: 22rem;
+}
+
+.scrollable-xl {
+  overflow-y: auto !important;
+  max-height: 31rem;
+  overflow-x: hidden;
+}
+
+.scrollable-all {
+  overflow-y: auto !important;
+  max-height: 100%;
+  overflow-x: hidden;
+}

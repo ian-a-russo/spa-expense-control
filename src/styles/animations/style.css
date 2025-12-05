@@ -1,0 +1,45 @@
+.hover-none {
+  &:hover {
+    transform: scale(1) !important;
+  }
+}
+
+.hover-xs {
+  transition: all 0.2s ease-out;
+  &:hover {
+    transform: scale(1.03) !important;
+  }
+}
+
+.hover-sm {
+  transition: all 0.2s ease-out;
+  &:hover {
+    transform: scale(1.08) !important;
+  }
+}
+
+.hover-md {
+  transition: all 0.2s ease-out;
+  &:hover {
+    transform: scale(1.12);
+  }
+}
+
+.hover-lg {
+  transition: all 0.2s ease-out;
+  &:hover {
+    transform: scale(1.3);
+  }
+}
+
+@keyframes background-movement {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
