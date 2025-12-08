@@ -11,13 +11,13 @@
         <v-icon v-else v-bind="props" class="ml-2"> mdi:filter </v-icon>
       </div>
     </template>
-    <v-card min-width="250px" class="pa-3 py-3" rounded="lg">
+    <v-card min-width="250px" class="pa-3 py-3" rounded="xl">
       <slot name="top"></slot>
       <v-autocomplete
         v-bind="$attrs"
         variant="outlined"
         density="comfortable"
-        rounded="lg"
+        rounded="xl"
         color="primary"
         v-model="internalValue"
         @update:model-value="emit('update:modelValue', $event)"

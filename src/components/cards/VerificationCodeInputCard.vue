@@ -26,7 +26,7 @@
         :loading="loading"
         color="blue"
         variant="flat"
-        rounded="md"
+        rounded="xl"
         @click="emit('validate-code', verificationCodeInternal)"
         :disabled="verificationCodeInternal.length < 6"
       >

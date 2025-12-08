@@ -2,7 +2,7 @@
   <v-alert
     v-model="isAlertOpen"
     :color="notifySnake.type"
-    rounded="lg"
+    rounded="xl"
     :title="notifySnake.title"
     max-width="500px"
     class="p-fixed pa-0"

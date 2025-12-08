@@ -1,20 +1,22 @@
 <template>
   <v-navigation-drawer
     style="position: fixed"
+    width="260"
     elevation="0"
-    class="modern-gradient-background border-e-md border-line-border"
+    class="modern-drawer border-e-md border-line-border"
   >
-    <div class="mt-5 text-center pa-5">
-      <!-- <v-img :src="`/logo.png`" cover /> -->
-      <v-icon size="70%" color="primary-lighten-1">
+    <!-- Logo / Branding -->
+    <div class="drawer-header text-center py-8">
+      <v-icon size="72" color="primary">
         streamline-freehand:money-atm-withdraw
       </v-icon>
-      <br />
-      <p class="text-h4 font-weight-bold text-primary">Expense</p>
-      <p class="font-weight-bold text-primary-darken-1">Control</p>
+
+      <p class="text-h5 mt-3 font-weight-bold text-primary">Expense</p>
+      <p class="text-subtitle-2 text-primary-darken-1">Control</p>
     </div>
 
-    <v-list color="transparent">
+    <!-- Navegação -->
+    <v-list color="transparent" class="px-3">
       <NavigationList :navigations="navigations" />
     </v-list>
   </v-navigation-drawer>
@@ -45,3 +47,26 @@ const navigations = computed(() => [
   },
 ]);
 </script>
+
+<style scoped>
+.modern-drawer {
+  background: linear-gradient(
+    180deg,
+    rgb(var(--v-theme-surface)) 0%,
+    rgb(var(--v-theme-background)) 100%
+  );
+}
+
+.drawer-header {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.07);
+}
+
+.user-box {
+  background: rgba(0, 0, 0, 0.04);
+  transition: 0.2s ease;
+}
+
+.user-box:hover {
+  background: rgba(0, 0, 0, 0.07);
+}
+</style>

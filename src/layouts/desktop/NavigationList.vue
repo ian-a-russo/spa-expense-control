@@ -2,33 +2,25 @@
   <div v-for="(navigation, index) in props.navigations" :key="index">
     <v-list-item
       :active="isActive(navigation.to)"
-      rounded="lg"
-      class="mr-2 mb-2 rounded-right-xl"
       :to="navigation.to"
+      rounded="xl"
+      class="nav-item"
     >
+      <template #prepend>
+        <v-icon class="nav-icon" :size="navigation.iconSize || '26'">
+          {{ navigation.icon }}
+        </v-icon>
+      </template>
+
       <template #title>
-        <div class="d-flex align-center">
-          <v-icon
-            class="mx-2"
-            :style="{
-              font: navigation.iconSize
-                ? navigation.iconSize + ' Quicksand, sans-serif'
-                : '30px Quicksand, sans-serif',
-            }"
-          >
-            {{ navigation.icon }}
-          </v-icon>
-          <span
-            class="mx-2"
-            :style="{
-              font: navigation.fontSize
-                ? navigation.fontSize + ' Quicksand, sans-serif'
-                : '16px Quicksand, sans-serif',
-            }"
-          >
-            {{ navigation.title }}
-          </span>
-        </div>
+        <span
+          class="nav-title"
+          :style="{
+            fontSize: navigation.fontSize ? navigation.fontSize : '16px',
+          }"
+        >
+          {{ navigation.title }}
+        </span>
       </template>
     </v-list-item>
   </div>
@@ -65,14 +57,53 @@ function logout() {
 </script>
 
 <style scoped>
-.v-list-item.v-list-item--active {
-  color: rgba(var(--v-theme-font)) !important;
-  opacity: 1 !important;
+/* Item principal */
+.nav-item {
+  margin-right: 6px;
+  margin-bottom: 6px;
+  padding: 8px 14px;
+  transition: 0.25s ease;
+  border-radius: 12px;
 }
 
-.v-list-item:hover {
-  transition: all 0.4s ease-in-out;
-  color: rgba(var(--v-theme-font)) !important;
-  opacity: 1 !important;
+/* Ícone */
+.nav-icon {
+  margin-right: 10px;
+  color: rgba(var(--v-theme-primary));
+  transition: color 0.25s ease;
+}
+
+/* Texto */
+.nav-title {
+  font-family: "Quicksand", sans-serif;
+  font-weight: 600;
+  color: rgba(var(--v-theme-on-surface), 0.85);
+  transition: color 0.25s ease;
+}
+
+/* ACTIVE STATE — mais elegante */
+.v-list-item--active {
+  background: rgba(var(--v-theme-primary), 0.12) !important;
+}
+
+.v-list-item--active .nav-title {
+  color: rgba(var(--v-theme-primary)) !important;
+}
+
+.v-list-item--active .nav-icon {
+  color: rgba(var(--v-theme-primary)) !important;
+}
+
+/* HOVER STATE */
+.nav-item:hover {
+  background: rgba(var(--v-theme-primary), 0.08);
+}
+
+.nav-item:hover .nav-title {
+  color: rgba(var(--v-theme-primary));
+}
+
+.nav-item:hover .nav-icon {
+  color: rgba(var(--v-theme-primary));
 }
 </style>

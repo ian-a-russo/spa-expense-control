@@ -1,80 +1,71 @@
 <template>
-  <PageHeader
-    :width="isMobile ? '95%' : '75rem'"
-    title="Gastos"
-    description="Gerenciamento de Gastos"
-    icon="streamline-freehand:money-coin-cash"
-  />
-  <v-card
-    :width="isMobile ? '95%' : '75rem'"
-    rounded="lg"
-    border="md"
-    class="pa-5 mx-8 mt-6 border-line-border"
-    color="transparent"
-  >
-    <div class="d-flex align-center mb-5">
-      <SearchBar
-        class="search-bar"
-        v-model:model-value="filter.name"
-        label="Buscar Gastos"
-      />
-    </div>
+  <div class="page-layout">
+    <!-- HEADER -->
+    <PageHeader
+      :width="isMobile ? '95%' : '75rem'"
+      title="Gastos"
+      description="Gerenciamento de Gastos"
+      icon="streamline-freehand:money-coin-cash"
+      class="mb-6"
+    />
 
-    <BaseDataTable
-      :items-length="itemsLength"
-      :items="response?.data"
-      :loading="loading"
-      :headers="headers"
-      @update:options="loadItems"
+    <!-- CARD PRINCIPAL -->
+    <v-card
+      :width="isMobile ? '95%' : '75rem'"
+      rounded="xl"
+      elevation="3"
+      color="surface"
+      class="content-wrapper"
     >
-      <template #header.name="{ column }">
-        <MenuFilterTextField
-          class="hide-on-mobile"
+      <!-- TOP BAR: BUSCA -->
+      <div class="top-actions">
+        <SearchBar
+          class="search-bar"
           v-model:model-value="filter.name"
-          :title="column.title"
-          hide-details
+          label="Buscar gastos..."
+          density="comfortable"
         />
-      </template>
-      <template #header.user.name="{ column }">
-        <MenuFilterTextField
-          v-model:model-value="filter.user.name"
-          :title="column.title"
-          hide-details
-        />
-      </template>
-      <template #header.category.name="{ column }">
-        <MenuFilterTextField
-          v-model:model-value="filter.category.name"
-          :title="column.title"
-          hide-details
-        />
-      </template>
-      <template v-slot:item.user.name="{ item }">
-        <v-chip prepend-icon="mdi:account">
-          {{ item.user.name }}
-        </v-chip>
-      </template>
-      <template v-slot:item.price="{ item }">
-        {{ "R$" + item.price.toFixed(2) }}
-      </template>
+      </div>
 
-      <template v-slot:item.actions="{ item }">
-        <div :class="isMobile ? 'd-flex pa-0 mx-0' : 'd-flex pa-2'">
-          <DialogConfirmDelete
-            :description="`Confirma exclusão do produto '${item.name}'?`"
-            :confirm-delete="async () => deleteItem(item.id)"
-            @delete-success="loadItems"
-          />
-        </div>
-      </template>
-      <template #item.updatedAt="{ item }">
-        <div>
-          {{ DateFormatter.formatWithTime(item.updatedAt) }}
-        </div>
-      </template>
-    </BaseDataTable>
-  </v-card>
+      <!-- TABELA -->
+      <BaseDataTable
+        :items-length="itemsLength"
+        :items="response?.data"
+        :loading="loading"
+        :headers="headers"
+        :mobile="isMobile"
+        @update:options="loadItems"
+      >
+        <template #item.user.name="{ item }">
+          <v-chip prepend-icon="mdi:account" variant="flat">
+            {{ item.user.name }}
+          </v-chip>
+        </template>
+
+        <template #item.price="{ item }">
+          <span class="price"> R$ {{ item.price.toFixed(2) }} </span>
+        </template>
+
+        <template #item.actions="{ item }">
+          <div class="actions">
+            <DialogConfirmDelete
+              :description="`Confirma exclusão do gasto '${item.name}'?`"
+              :confirm-delete="async () => deleteItem(item.id)"
+              @delete-success="loadItems"
+            />
+          </div>
+        </template>
+
+        <template #item.updatedAt="{ item }">
+          <div class="opacity-80">
+            {{ DateFormatter.formatWithTime(item.updatedAt) }}
+          </div>
+        </template>
+      </BaseDataTable>
+    </v-card>
+  </div>
 </template>
+
 <script lang="ts" setup>
 import type { IExpense } from "@/services/expense/i-expense";
 import type { ResponsePaginate } from "@/services/http/i-base.http";
@@ -92,7 +83,7 @@ import { httpCoordinator } from "@/services/http/axios/http-coordinator.http";
 
 const itemsLength = ref<number | string>(1);
 const loading = ref(false);
-const response = ref<ResponsePaginate<IExpense>>({} as any);
+const items = ref<IExpense[]>([{}] as any);
 const options = ref<Options>({
   itemsPerPage: 10,
   page: 1,
@@ -134,14 +125,15 @@ async function loadItems(newOptions?: Options) {
   const order = defineOrder(options.value);
 
   try {
-    response.value = await httpCoordinator.expense.list({
+    const result = await httpCoordinator.expense.list({
       itemsPerPage: options.value.itemsPerPage,
       currentPage: options.value.page,
       order,
       ...filter.value,
     });
 
-    itemsLength.value = response?.value?.meta?.totalItems;
+    items.value = result.data;
+    itemsLength.value = result?.meta?.totalItems;
   } catch (e) {
   } finally {
     loading.value = false;
@@ -165,12 +157,12 @@ const headers = computed((): Header[] => [
   {
     key: "name",
     sortable: false,
-    title: "Nome",
+    title: "Nome do Gasto",
   },
   {
-    key: "price",
+    key: "value",
     sortable: false,
-    title: "Preço",
+    title: "Valor",
   },
   {
     key: "user.name",
@@ -198,17 +190,63 @@ const headers = computed((): Header[] => [
 </script>
 
 <style scoped>
-.search-bar {
-  margin-left: 5px;
-  margin-right: 5px;
-  width: 100px !important;
+.page-layout {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
 }
 
-@media screen and (max-width: 768px) {
+.content-wrapper {
+  padding: 2rem;
+  margin-top: 1rem;
+}
+
+.top-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+.search-bar {
+  flex: 1;
+  max-width: 20rem;
+}
+
+.header-filter {
+  max-width: 12rem;
+}
+
+.price {
+  font-weight: 600;
+}
+
+.actions {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  align-items: center;
+}
+
+/* MOBILE */
+@media (max-width: 768px) {
+  .content-wrapper {
+    padding: 1rem;
+  }
+
+  .top-actions {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
   .search-bar {
-    margin-right: 0px;
-    margin-left: 0px;
     width: 100% !important;
+    max-width: none !important;
+  }
+
+  .header-filter {
+    width: 100%;
+    max-width: none !important;
   }
 }
 </style>

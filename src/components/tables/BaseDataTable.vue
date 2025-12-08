@@ -3,12 +3,12 @@
     :items-length="itemsLength"
     class="custom-table scrollable-lg"
     :hide-default-header="vuetify.display.mdAndDown.value"
-    rounded="lg"
+    rounded="xl"
     hover
     v-bind="$attrs"
     density="comfortable"
     :mobile="isMobile"
-    no-data-text="Ops! Não foram encontrados itens :("
+    no-data-text="Nenhum registro encontrado"
   >
     <template v-for="slotName in slotsNames" v-slot:[slotName]="slotProps">
       <th :class="`d-flex justify-${getHeaderAlign(slotName)} `">
@@ -92,31 +92,83 @@ export type { Options, SortBy, Header };
 <style scoped>
 .custom-table {
   background-color: transparent !important;
+  border-radius: 12px;
+  overflow: hidden;
+}
 
-  & :deep(th) {
-    background-color: transparent !important;
-    font-weight: lighter !important;
+/* Garantir que o header nunca pareça input */
+.custom-table :deep(th) {
+  cursor: default !important;
+}
+
+/* Se houver filtro, deixar o header com aparência de "interativo", mas não input */
+.custom-table :deep(th .v-icon) {
+  opacity: 0.7;
+  cursor: pointer !important;
+  transition: opacity 0.15s ease;
+}
+
+.custom-table :deep(th .v-icon:hover) {
+  opacity: 1;
+}
+
+/* Remover qualquer aparência de caixa de input */
+.custom-table :deep(th) {
+  box-shadow: none !important;
+  border: none !important;
+}
+
+/* CÉLULAS */
+.custom-table :deep(td) {
+  padding: 14px 12px !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* ZEBRA ROWS */
+.custom-table :deep(tr:nth-child(even)) td {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+/* HOVER suave e elegante */
+.custom-table :deep(tbody tr:hover) td {
+  background: rgba(140, 100, 255, 0.12) !important;
+  transition: background 0.2s ease;
+}
+
+/* MOBILE – estilo cartão */
+@media (max-width: 768px) {
+  .custom-table :deep(tbody td) {
+    display: flex !important;
+    justify-content: space-between;
+    padding: 14px 10px !important;
+    background: rgba(255, 255, 255, 0.03);
+    margin-bottom: 8px;
+    border-radius: 10px;
   }
 
-  & :deep(.v-data-table__td-title) {
-    font-weight: 750 !important;
+  .custom-table :deep(tbody tr) {
+    display: block !important;
+    margin-bottom: 10px;
+    border: none !important;
+  }
+
+  .custom-table :deep(tbody tr:hover) td {
+    background: rgba(140, 100, 255, 0.15) !important;
+  }
+
+  /* header escondido com elegância */
+  .custom-table :deep(thead) {
+    display: none;
   }
 }
 
-@media screen and (max-width: 768px) {
-  .custom-table :deep(th) {
-    justify-content: start !important;
-    background-color: transparent !important;
-  }
-
-  .custom-table :deep(.v-data-table__td-value) {
-    width: 100%;
-  }
-}
-
+/* Dropdown de density, pagination, menu */
 .v-list--density-default {
-  padding: 0 !important;
+  padding: 4px !important;
   margin: 0 !important;
-  background-color: rgba(var(--v-theme-background-lighten-1)) !important;
+  background-color: rgba(var(--v-theme-surface), 0.9) !important;
+  backdrop-filter: blur(8px);
 }
 </style>

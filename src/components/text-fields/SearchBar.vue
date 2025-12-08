@@ -1,15 +1,18 @@
 <template v-slot:text>
   <v-text-field
     :model-value="internalValue"
-    label="Search"
-    prepend-inner-icon="mdi:magnify"
+    :label="title || 'Pesquisar...'"
+    prepend-inner-icon="mdi-magnify"
     hide-details
-    rounded="lg"
-    variant="outlined"
-    density="compact"
+    density="comfortable"
+    variant="solo-filled"
+    rounded="xl"
+    flat
+    class="filter-input"
     @input="emitValue($event.target.value)"
-  ></v-text-field>
+  />
 </template>
+
 <script lang="ts" setup>
 import { ref } from "vue";
 
@@ -54,3 +57,27 @@ function clearText() {
   emit("update:modelValue", null);
 }
 </script>
+
+<style scoped>
+.filter-input {
+  max-width: 320px;
+  transition: 0.15s ease;
+}
+
+.filter-input :deep(.v-field) {
+  background-color: rgba(0, 0, 0, 0.035) !important;
+  box-shadow: none !important;
+}
+
+.filter-input :deep(.v-field:hover) {
+  background-color: rgba(0, 0, 0, 0.05) !important;
+}
+
+.filter-input :deep(.v-field--focused) {
+  background-color: rgba(0, 0, 0, 0.06) !important;
+}
+
+.filter-input :deep(input) {
+  font-size: 0.95rem;
+}
+</style>

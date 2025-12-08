@@ -12,7 +12,7 @@
       </div>
     </template>
 
-    <v-card min-width="250" class="pa-3 py-3" rounded="lg">
+    <v-card min-width="250" class="pa-3 py-3" rounded="xl">
       <v-text-field
         @click:clear="clearText"
         clearable
@@ -21,7 +21,7 @@
         hide-details
         variant="outlined"
         density="comfortable"
-        rounded="lg"
+        rounded="xl"
         :model-value="internalValue"
         @input="emitValue($event.target.value)"
       ></v-text-field>
