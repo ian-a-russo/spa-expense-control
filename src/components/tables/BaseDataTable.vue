@@ -83,7 +83,7 @@ type SortBy = {
 type Options = {
   itemsPerPage: number;
   page: number;
-  sortBy: SortBy[];
+  sortBy?: SortBy[];
 };
 
 export type { Options, SortBy, Header };
