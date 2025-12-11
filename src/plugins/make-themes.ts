@@ -5,7 +5,8 @@ export const defaultColors = {
   error: "rgb(220, 80, 80)",
   "line-border": "#9364f3ff",
   "line-border-darken-1": "rgb(140, 155, 175)",
-  "warning-darken-1": "rgb(255, 150, 60)",
+  warning: "#FF5E3A",
+  "warning-darken-1": "rgba(215, 122, 40, 1)",
 };
 
 export const defaultDark = {

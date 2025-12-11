@@ -1,4 +1,5 @@
 import type { ICategory } from "../category/i-category";
+import type { IPaymentMethod } from "../payment-method/i-payment-method";
 import type { IPerson } from "../person/i-person";
 
 export interface IExpense {
@@ -12,6 +13,7 @@ export interface IExpense {
   updatedAt: Date;
   personId: number;
   paymentMethodId: number;
+  paymentMethod?: IPaymentMethod;
   person?: IPerson;
   category?: ICategory;
 }

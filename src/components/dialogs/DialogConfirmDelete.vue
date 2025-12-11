@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-dialog v-model="dialog" max-width="420px" persistent>
+    <v-dialog v-model="dialog" max-width="320px" persistent>
       <template #activator="{ props: activatorProps }">
         <v-btn
           v-bind="activatorProps"
@@ -23,11 +23,11 @@
           <v-icon
             class="mb-4"
             color="error"
-            icon="mdi-alert-circle"
+            icon="streamline-freehand:alerts-warning-triangle"
             size="64"
           />
-          <h3 class="font-weight-bold mb-2">Deseja excluir?</h3>
-          <p class="text-body-2 grey--text mb-4">
+          <h3 class="text-h6 mb-2">Deseja excluir?</h3>
+          <p class="text-body-2 mb-4">
             {{ description }}
           </p>
         </div>
@@ -45,7 +45,7 @@
 
           <v-btn
             class="rounded-lg px-6"
-            color="error"
+            color="error-darken-1"
             :loading="loading"
             variant="flat"
             width="100"

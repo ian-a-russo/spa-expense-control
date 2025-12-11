@@ -1,8 +1,6 @@
-export interface ICategory {
+export interface IPaymentMethod {
   id: number;
   name: string;
-  description: string;
-  color: string;
   createdAt: Date;
   updatedAt: Date;
 }

@@ -8,8 +8,8 @@
   />
 
   <v-card
-    class="w-100 pa-6 rounded-xl bg-surface d-flex flex-column gap-6"
-    rounded="xl"
+    class="w-100 pa-6 bg-surface d-flex flex-column gap-6"
+    :rounded="isMobile ? '' : 'xl'"
     elevation="3"
   >
     <v-row class="align-center justify-center mb-5 flex-wrap" no-gutters>
@@ -25,9 +25,21 @@
         :cols="isMobile ? 12 : 6"
         class="d-flex align-center justify-end px-4 mt-4 mt-sm-0"
       >
-        <MenuFilterExpense
-          @update:filter="(value: any) => (filter.uuidSegment = value)"
+        <DialogCreateExpense
+          @save="loadItems"
+          @close="createDialog = false"
+          :dialog="createDialog"
         />
+
+        <v-btn
+          color="primary"
+          prepend-icon="mdi-plus"
+          variant="flat"
+          @click="createDialog = true"
+          v-if="!vuetify.display.mobile.value"
+        >
+          Cadastrar
+        </v-btn>
       </v-col>
     </v-row>
 
@@ -61,7 +73,7 @@
                 icon="mdi-close"
                 size="20"
                 :confirm-delete="async () => deleteItem(item)"
-                :description="`Deseja remover '${item.name}'?`"
+                :description="`Deseja remover o gasto '${item.name}'?`"
               />
             </div>
 
@@ -79,6 +91,10 @@
               {{
                 DateFormatter.formatWithTime(item.createdAt).replace(",", " às")
               }}
+            </div>
+            <div class="w-100 d-flex justify-start my-2">
+              <v-icon class="mr-2"> streamline-freehand:credit-card-1 </v-icon>
+              {{ item.paymentMethod?.name }}
             </div>
 
             <div
@@ -112,6 +128,13 @@
       <div class="d-flex justify-center mt-5" v-else>
         <p>Nenhum item encontrado nessa seção :(</p>
       </div>
+
+      <DialogEditExpense
+        :edit-expense="editDialog.item"
+        @save="loadItems"
+        @close="editDialog.open = false"
+        :dialog="editDialog.open"
+      />
     </v-container>
 
     <div
@@ -159,6 +182,8 @@ import vuetify from "@/plugins/vuetify";
 import type { Header, Options } from "@/components/tables/BaseDataTable.vue";
 import { usePagination } from "@/composables/usePagination";
 import { DateFormatter } from "@/utils/date-formatter";
+import DialogEditExpense from "./components/DialogEditExpense.vue";
+import DialogCreateExpense from "./components/DialogCreateExpense.vue";
 
 const emit = defineEmits<{
   (
@@ -166,6 +191,7 @@ const emit = defineEmits<{
     value: { page: number; itemsPerPage: number; sortBy: [] }
   ): void;
 }>();
+const createDialog = ref(false);
 const editDialog = ref<{ open: boolean; item?: IExpense }>({
   open: false,
   item: undefined,
@@ -177,9 +203,15 @@ const items = ref<IExpense[]>([
     id: 1,
     name: "Pizza",
     price: 70.0,
-    categoryId: 2,
+    categoryId: 1,
     personId: 1,
     paymentMethodId: 1,
+    paymentMethod: {
+      id: 1,
+      name: "Cartão de Crédito",
+      createdAt: new Date("2024-06-10"),
+      updatedAt: new Date("2024-06-10"),
+    },
     person: {
       id: 1,
       name: "João Silva",
@@ -188,7 +220,7 @@ const items = ref<IExpense[]>([
       updatedAt: new Date("2024-06-10"),
     },
     category: {
-      id: 2,
+      id: 1,
       color: "#FF5733",
       name: "Alimentação",
       description: "Despesas relacionadas a alimentação",
@@ -204,9 +236,15 @@ const items = ref<IExpense[]>([
     id: 2,
     name: "Sorvete",
     price: 20.0,
-    categoryId: 2,
+    categoryId: 1,
     personId: 1,
     paymentMethodId: 1,
+    paymentMethod: {
+      id: 1,
+      name: "Cartão de Crédito",
+      createdAt: new Date("2024-06-10"),
+      updatedAt: new Date("2024-06-10"),
+    },
     person: {
       id: 1,
       name: "João Silva",
@@ -215,7 +253,7 @@ const items = ref<IExpense[]>([
       updatedAt: new Date("2024-06-10"),
     },
     category: {
-      id: 2,
+      id: 1,
       color: "#FF5733",
       name: "Alimentação",
       description: "Despesas relacionadas a alimentação",
@@ -231,9 +269,15 @@ const items = ref<IExpense[]>([
     id: 3,
     name: "Café da tarde",
     price: 50.0,
-    categoryId: 2,
+    categoryId: 1,
     personId: 1,
     paymentMethodId: 1,
+    paymentMethod: {
+      id: 1,
+      name: "Cartão de Crédito",
+      createdAt: new Date("2024-06-10"),
+      updatedAt: new Date("2024-06-10"),
+    },
     person: {
       id: 1,
       name: "João Silva",
@@ -242,7 +286,7 @@ const items = ref<IExpense[]>([
       updatedAt: new Date("2024-06-10"),
     },
     category: {
-      id: 2,
+      id: 1,
       color: "#FF5733",
       name: "Alimentação",
       description: "Despesas relacionadas a alimentação",
@@ -258,9 +302,15 @@ const items = ref<IExpense[]>([
     id: 4,
     name: "Lanche",
     price: 80.0,
-    categoryId: 2,
+    categoryId: 1,
     personId: 1,
     paymentMethodId: 1,
+    paymentMethod: {
+      id: 1,
+      name: "Cartão de Crédito",
+      createdAt: new Date("2024-06-10"),
+      updatedAt: new Date("2024-06-10"),
+    },
     person: {
       id: 1,
       name: "João Silva",
@@ -269,7 +319,7 @@ const items = ref<IExpense[]>([
       updatedAt: new Date("2024-06-10"),
     },
     category: {
-      id: 2,
+      id: 1,
       color: "#FF5733",
       name: "Alimentação",
       description: "Despesas relacionadas a alimentação",

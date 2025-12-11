@@ -1,7 +1,7 @@
 <template>
   <v-card
     class="d-flex align-center pa-5 modern-side-card"
-    rounded="xl"
+    :rounded="isMobile ? '' : 'xl'"
     elevation="3"
   >
     <div class="side-bar"></div>
