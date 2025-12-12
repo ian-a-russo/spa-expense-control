@@ -96,20 +96,22 @@
           </v-col>
 
           <v-col cols="12">
-            <v-number-input
-              rounded="xl"
-              class="py-1"
-              control-variant="stacked"
-              prepend-inner-icon="streamline-freehand:money-cash-bill"
-              v-model="formBody.price"
-              :rules="[required]"
-              :precision="2"
-              :min="0"
-              hide-details
-              label="Preço"
-              variant="solo-filled"
-              density="comfortable"
-            />
+            <div class="rounded-xl overflow-hidden">
+              <v-number-input
+                class="py-1"
+                control-variant="stacked"
+                prepend-inner-icon="streamline-freehand:money-cash-bill"
+                v-model="formBody.price"
+                :rules="[required]"
+                :precision="2"
+                :min="0"
+                hide-details
+                rounded="xl"
+                label="Preço"
+                variant="solo-filled"
+                density="comfortable"
+              />
+            </div>
           </v-col>
         </v-row>
       </v-form>

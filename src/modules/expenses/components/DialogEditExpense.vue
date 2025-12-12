@@ -4,7 +4,7 @@
     :fullscreen="mobile"
     height="auto"
     persistent
-    width="700"
+    width="350"
   >
     <FormExpense
       :item="editExpense"
