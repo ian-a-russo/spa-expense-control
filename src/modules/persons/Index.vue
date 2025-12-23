@@ -1,8 +1,8 @@
 <template>
   <PageHeader
     :width="isMobile ? '100%' : '75rem'"
-    title="Compras"
-    description="Gerenciamento de Compras"
+    title="Pessoas"
+    description="Gerenciamento de Pessoas"
     icon="streamline-freehand:money-coin-cash"
     class="mb-6"
   />
@@ -182,8 +182,8 @@ import vuetify from "@/plugins/vuetify";
 import type { Header, Options } from "@/components/tables/BaseDataTable.vue";
 import { usePagination } from "@/composables/usePagination";
 import { DateFormatter } from "@/utils/date-formatter";
-import DialogEditExpense from "./components/DialogEditExpense.vue";
-import DialogCreateExpense from "./components/DialogCreateExpense.vue";
+import DialogEditExpense from "./components/DialogEditPerson.vue";
+import DialogCreateExpense from "./components/DialogCreatePerson.vue";
 
 const emit = defineEmits<{
   (

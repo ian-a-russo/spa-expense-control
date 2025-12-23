@@ -9,7 +9,7 @@
         }}
       </v-icon>
 
-      {{ isEdit ? "Editar Gasto" : "Cadastrar Gasto" }}
+      {{ isEdit ? "Editar Compra" : "Cadastrar Compra" }}
     </v-card-title>
 
     <v-divider />
@@ -26,7 +26,7 @@
               variant="solo-filled"
               density="comfortable"
               hide-details
-              label="Nome do Gasto"
+              label="Nome do Compra"
               prepend-inner-icon="streamline-freehand:task-list-pin-1"
             />
           </v-col>
@@ -150,8 +150,6 @@ export type ExpenseForm = {
   price?: number;
   categoryId?: number;
   userId?: number;
-  createdAt?: Date;
-  updatedAt?: Date;
   personId?: number;
   paymentMethodId?: number;
 };
@@ -172,29 +170,14 @@ const formBody = ref<ExpenseForm>({
   price: undefined,
   categoryId: undefined,
   userId: undefined,
-  createdAt: undefined,
-  updatedAt: undefined,
   personId: undefined,
   paymentMethodId: undefined,
 });
 
-/* SELECTED OBJECTS */
 const selectedCategory = ref<any>(null);
 const selectedPerson = ref<any>(null);
 const selectedPaymentMethod = ref<any>(null);
 
-/* UPDATE HANDLERS */
-function onSelectCategory(value: any) {
-  formBody.value.categoryId = value?.id || 0;
-}
-function onSelectPerson(value: any) {
-  formBody.value.personId = value?.id || 0;
-}
-function onSelectPayment(value: any) {
-  formBody.value.paymentMethodId = value?.id || 0;
-}
-
-/* LOAD DATA WHEN EDITING */
 onMounted(() => {
   if (!props.item) return;
   formBody.value = { ...props.item };

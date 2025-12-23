@@ -5,7 +5,6 @@
     elevation="0"
     class="modern-drawer border-e-md border-line-border"
   >
-    <!-- Logo / Branding -->
     <div class="drawer-header text-center py-8">
       <v-icon size="72" color="primary">
         streamline-freehand:money-atm-withdraw
@@ -15,7 +14,6 @@
       <p class="text-subtitle-2 text-primary-darken-1">Control</p>
     </div>
 
-    <!-- Navegação -->
     <v-list color="transparent" class="px-3">
       <NavigationList :navigations="navigations" />
     </v-list>
@@ -41,9 +39,14 @@ onMounted(() => {
 
 const navigations = computed(() => [
   {
-    title: "Gastos",
+    title: "Compras",
     icon: "streamline-freehand:money-coin-cash",
     to: "/expenses",
+  },
+  {
+    title: "Pessoas",
+    icon: "streamline-freehand:business-management-agreement",
+    to: "/persons",
   },
 ]);
 </script>

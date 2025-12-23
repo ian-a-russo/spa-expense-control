@@ -1,8 +1,6 @@
-export interface IPerson {
+export interface IFamiliarity {
   id: number;
   name: string;
-  familiarityId: number;
-  userId: number;
   createdAt: Date;
   updatedAt: Date;
 }

@@ -1,0 +1,5 @@
+#Gasto por pessoa
+#Gasto total no último mês
+#Forma de pagamento com maior custo
+#Gasto por categoria
+#Compra com maior custo

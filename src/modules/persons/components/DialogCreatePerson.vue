@@ -6,7 +6,7 @@
     persistent
     width="350"
   >
-    <FormExpense :loading="loading" @close="emit('close')" @save="save" />
+    <FormPerson :loading="loading" @close="emit('close')" @save="save" />
   </v-dialog>
 </template>
 
@@ -15,8 +15,8 @@ import { notify } from "@/services/http/notify";
 import { useDisplay } from "vuetify";
 import { errorMessages } from "@/services/http/error-messages";
 import { httpCoordinator } from "@/services/http/axios/http-coordinator.http";
-import type { ExpenseForm } from "./FormExpense.vue";
-import FormExpense from "./FormExpense.vue";
+import type { PersonForm } from "./FormPerson.vue";
+import FormPerson from "./FormPerson.vue";
 
 const props = defineProps<{
   dialog: boolean;
@@ -26,11 +26,11 @@ const { mobile } = useDisplay();
 const emit = defineEmits(["save", "close"]);
 const loading = ref(false);
 
-async function save(expense: ExpenseForm) {
+async function save(person: PersonForm) {
   try {
     loading.value = true;
 
-    await httpCoordinator.expense.create(expense);
+    await httpCoordinator.person.create(person);
 
     emit("save");
     notify("Sucesso ao salvar.", "success");
