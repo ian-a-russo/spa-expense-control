@@ -25,7 +25,7 @@
         :cols="isMobile ? 12 : 6"
         class="d-flex align-center justify-end px-4 mt-4 mt-sm-0"
       >
-        <DialogCreateExpense
+        <DialogCreatePerson
           @save="loadItems"
           @close="createDialog = false"
           :dialog="createDialog"
@@ -78,44 +78,12 @@
             </div>
 
             <p class="text-body-2 text-medium-emphasis my-2">
-              {{ item.description }}
+              {{ item.familiarity?.name }}
             </p>
 
             <div class="w-100 d-flex justify-start my-2">
-              <v-icon class="mr-2"> streamline-freehand:face-id-male-1 </v-icon>
-              {{ item.person?.name }}
-            </div>
-
-            <div class="w-100 d-flex justify-start my-2">
               <v-icon class="mr-2"> streamline-freehand:calendar-grid </v-icon>
-              {{
-                DateFormatter.formatWithTime(item.createdAt).replace(",", " às")
-              }}
-            </div>
-            <div class="w-100 d-flex justify-start my-2">
-              <v-icon class="mr-2"> streamline-freehand:credit-card-1 </v-icon>
-              {{ item.paymentMethod?.name }}
-            </div>
-
-            <div
-              class="d-flex justify-space-between align-center pt-3 mt-auto border-t border-opacity-10"
-            >
-              <div class="d-flex flex-column align-center">
-                <span class="text-caption text-medium-emphasis">Preço</span>
-                <span class="text-subtitle-1 font-weight-bold"
-                  >R$ {{ item.price }}</span
-                >
-              </div>
-
-              <div class="d-flex flex-column align-center">
-                <span class="text-caption text-medium-emphasis">Categoria</span>
-
-                <v-chip
-                  class="text-subtitle-2 font-weight-bold text-center"
-                  :color="item.category?.color"
-                  >{{ item.category?.name }}</v-chip
-                >
-              </div>
+              Nasceu em {{ DateFormatter.formatWithoutTime(item.bornAt) }}
             </div>
           </v-card>
         </v-col>
@@ -129,8 +97,8 @@
         <p>Nenhum item encontrado nessa seção :(</p>
       </div>
 
-      <DialogEditExpense
-        :edit-expense="editDialog.item"
+      <DialogEditPerson
+        :edit-person="editDialog.item"
         @save="loadItems"
         @close="editDialog.open = false"
         :dialog="editDialog.open"
@@ -174,7 +142,7 @@
 
 <script lang="ts" setup>
 import { http } from "@/services/http/axios/http";
-import type { IExpense } from "@/services/http/expense/i-expense";
+import type { IPerson } from "@/services/http/person/i-person";
 import DialogConfirmDelete from "@/components/dialogs/DialogConfirmDelete.vue";
 import { notify } from "@/services/http/notify";
 import { errorMessages } from "@/services/http/error-messages";
@@ -182,8 +150,8 @@ import vuetify from "@/plugins/vuetify";
 import type { Header, Options } from "@/components/tables/BaseDataTable.vue";
 import { usePagination } from "@/composables/usePagination";
 import { DateFormatter } from "@/utils/date-formatter";
-import DialogEditExpense from "./components/DialogEditPerson.vue";
-import DialogCreateExpense from "./components/DialogCreatePerson.vue";
+import DialogEditPerson from "./components/DialogEditPerson.vue";
+import DialogCreatePerson from "./components/DialogCreatePerson.vue";
 
 const emit = defineEmits<{
   (
@@ -192,144 +160,27 @@ const emit = defineEmits<{
   ): void;
 }>();
 const createDialog = ref(false);
-const editDialog = ref<{ open: boolean; item?: IExpense }>({
+const editDialog = ref<{ open: boolean; item?: IPerson }>({
   open: false,
   item: undefined,
 });
 const isMobile = computed(() => vuetify.display.mobile.value);
 const loading = ref(false);
-const items = ref<IExpense[]>([
+const items = ref<IPerson[]>([
   {
     id: 1,
     name: "Pizza",
-    price: 70.0,
-    categoryId: 1,
-    personId: 1,
-    paymentMethodId: 1,
-    paymentMethod: {
-      id: 1,
-      name: "Cartão de Crédito",
-      createdAt: new Date("2024-06-10"),
-      updatedAt: new Date("2024-06-10"),
-    },
-    person: {
-      id: 1,
-      name: "João Silva",
-      userId: 1,
-      createdAt: new Date("2024-06-10"),
-      updatedAt: new Date("2024-06-10"),
-    },
-    category: {
-      id: 1,
-      color: "#FF5733",
-      name: "Alimentação",
-      description: "Despesas relacionadas a alimentação",
-      createdAt: new Date("2024-06-10"),
-      updatedAt: new Date("2024-06-10"),
-    },
     createdAt: new Date("2024-06-08"),
     updatedAt: new Date("2024-06-08"),
-    description: "Descrição da compra exemplo",
     userId: 1,
-  },
-  {
-    id: 2,
-    name: "Sorvete",
-    price: 20.0,
-    categoryId: 1,
-    personId: 1,
-    paymentMethodId: 1,
-    paymentMethod: {
+    bornAt: new Date("2003-09-30"),
+    familiarityId: 1,
+    familiarity: {
       id: 1,
-      name: "Cartão de Crédito",
-      createdAt: new Date("2024-06-10"),
-      updatedAt: new Date("2024-06-10"),
+      name: "Conjugê",
+      createdAt: new Date("2024-06-01"),
+      updatedAt: new Date("2024-06-01"),
     },
-    person: {
-      id: 1,
-      name: "João Silva",
-      userId: 1,
-      createdAt: new Date("2024-06-10"),
-      updatedAt: new Date("2024-06-10"),
-    },
-    category: {
-      id: 1,
-      color: "#FF5733",
-      name: "Alimentação",
-      description: "Despesas relacionadas a alimentação",
-      createdAt: new Date("2024-06-10"),
-      updatedAt: new Date("2024-06-10"),
-    },
-    createdAt: new Date("2024-06-07"),
-    updatedAt: new Date("2024-06-07"),
-    description: "Descrição da compra exemplo",
-    userId: 1,
-  },
-  {
-    id: 3,
-    name: "Café da tarde",
-    price: 50.0,
-    categoryId: 1,
-    personId: 1,
-    paymentMethodId: 1,
-    paymentMethod: {
-      id: 1,
-      name: "Cartão de Crédito",
-      createdAt: new Date("2024-06-10"),
-      updatedAt: new Date("2024-06-10"),
-    },
-    person: {
-      id: 1,
-      name: "João Silva",
-      userId: 1,
-      createdAt: new Date("2024-06-10"),
-      updatedAt: new Date("2024-06-10"),
-    },
-    category: {
-      id: 1,
-      color: "#FF5733",
-      name: "Alimentação",
-      description: "Despesas relacionadas a alimentação",
-      createdAt: new Date("2024-06-10"),
-      updatedAt: new Date("2024-06-10"),
-    },
-    createdAt: new Date("2024-06-06"),
-    updatedAt: new Date("2024-06-06"),
-    description: "Descrição da compra exemplo",
-    userId: 1,
-  },
-  {
-    id: 4,
-    name: "Lanche",
-    price: 80.0,
-    categoryId: 1,
-    personId: 1,
-    paymentMethodId: 1,
-    paymentMethod: {
-      id: 1,
-      name: "Cartão de Crédito",
-      createdAt: new Date("2024-06-10"),
-      updatedAt: new Date("2024-06-10"),
-    },
-    person: {
-      id: 1,
-      name: "João Silva",
-      userId: 1,
-      createdAt: new Date("2024-06-10"),
-      updatedAt: new Date("2024-06-10"),
-    },
-    category: {
-      id: 1,
-      color: "#FF5733",
-      name: "Alimentação",
-      description: "Despesas relacionadas a alimentação",
-      createdAt: new Date("2024-06-10"),
-      updatedAt: new Date("2024-06-10"),
-    },
-    createdAt: new Date("2024-06-05"),
-    updatedAt: new Date("2024-06-05"),
-    description: "Descrição da compra exemplo",
-    userId: 1,
   },
 ]);
 const itemsLength = ref<number>(0);
@@ -368,7 +219,7 @@ onMounted(async () => {
   loadItems();
 });
 
-function openEditDialog(item: IExpense) {
+function openEditDialog(item: IPerson) {
   editDialog.value = { open: true, item };
 }
 
@@ -390,7 +241,7 @@ async function loadItems(newOptions?: Options) {
   // }
 }
 
-async function deleteItem(concessionaria: IExpense) {
+async function deleteItem(concessionaria: IPerson) {
   // try {
   //   loading.value = true;
   //   await http.concessionaria.delete(concessionaria.id);

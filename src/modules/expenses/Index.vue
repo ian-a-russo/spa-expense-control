@@ -216,6 +216,8 @@ const items = ref<IExpense[]>([
       id: 1,
       name: "João Silva",
       userId: 1,
+      familiarityId: 1,
+      bornAt: new Date("2000-01-01"),
       createdAt: new Date("2024-06-10"),
       updatedAt: new Date("2024-06-10"),
     },
@@ -248,6 +250,8 @@ const items = ref<IExpense[]>([
     person: {
       id: 1,
       name: "João Silva",
+      familiarityId: 1,
+      bornAt: new Date("2000-01-01"),
       userId: 1,
       createdAt: new Date("2024-06-10"),
       updatedAt: new Date("2024-06-10"),
@@ -281,6 +285,8 @@ const items = ref<IExpense[]>([
     person: {
       id: 1,
       name: "João Silva",
+      familiarityId: 1,
+      bornAt: new Date("2000-01-01"),
       userId: 1,
       createdAt: new Date("2024-06-10"),
       updatedAt: new Date("2024-06-10"),
@@ -314,6 +320,8 @@ const items = ref<IExpense[]>([
     person: {
       id: 1,
       name: "João Silva",
+      familiarityId: 1,
+      bornAt: new Date("2000-01-01"),
       userId: 1,
       createdAt: new Date("2024-06-10"),
       updatedAt: new Date("2024-06-10"),
