@@ -3,7 +3,7 @@
     :width="isMobile ? '100%' : '75rem'"
     title="Pessoas"
     description="Gerenciamento de Pessoas"
-    icon="streamline-freehand:money-coin-cash"
+    icon="streamline-freehand:business-management-agreement"
     class="mb-6"
   />
 
@@ -52,38 +52,56 @@
           sm="6"
           md="4"
           lg="3"
-          class="pa-4"
+          class="pa-3"
         >
           <v-card
             @click="openEditDialog(item)"
-            class="custom-card fill-height rounded-xl bg-surface d-flex flex-column justify-space-between pa-4 transition-fast hover:elevation-12"
-            elevation="5"
-            min-height="200"
+            class="person-card fill-height rounded-xl bg-surface d-flex flex-column justify-space-between pa-4"
+            elevation="3"
           >
-            <div class="d-flex justify-space-between align-center mb-2">
+            <!-- Header -->
+            <div class="d-flex justify-space-between align-start mb-3">
               <div class="d-flex align-center">
-                <v-icon class="mr-2">
-                  streamline-freehand:task-list-pin-1
-                </v-icon>
-                <h3 class="text-h6 font-weight-bold">{{ item.name }}</h3>
+                <v-avatar size="40" class="mr-3 bg-primary">
+                  <v-icon color="white">
+                    streamline-freehand:face-id-male-1
+                  </v-icon>
+                </v-avatar>
+
+                <div>
+                  <h3 class="text-subtitle-1 font-weight-bold mb-0">
+                    {{ item.name }}
+                  </h3>
+                  <span class="text-caption text-medium-emphasis">
+                    {{ item.familiarity?.name }}
+                  </span>
+                </div>
               </div>
 
+              <!-- Delete -->
               <DialogConfirmDelete
                 @delete-success="loadItems"
                 icon="mdi-close"
-                size="20"
+                size="18"
                 :confirm-delete="async () => deleteItem(item)"
-                :description="`Deseja remover o gasto '${item.name}'?`"
+                :description="`Deseja remover a pessoa '${item.name}'?`"
               />
             </div>
 
-            <p class="text-body-2 text-medium-emphasis my-2">
-              {{ item.familiarity?.name }}
-            </p>
+            <!-- Divider -->
+            <v-divider class="my-2" />
 
-            <div class="w-100 d-flex justify-start my-2">
-              <v-icon class="mr-2"> streamline-freehand:calendar-grid </v-icon>
-              Nasceu em {{ DateFormatter.formatWithoutTime(item.bornAt) }}
+            <!-- Info -->
+            <div class="d-flex align-center text-body-2 text-medium-emphasis">
+              <v-icon size="18" class="mr-2">
+                streamline-freehand:calendar-grid
+              </v-icon>
+              <span>
+                Nascimento:
+                <strong class="text-high-emphasis">
+                  {{ DateFormatter.formatWithoutTime(item.bornAt) }}
+                </strong>
+              </span>
             </div>
           </v-card>
         </v-col>
@@ -169,7 +187,7 @@ const loading = ref(false);
 const items = ref<IPerson[]>([
   {
     id: 1,
-    name: "Pizza",
+    name: "Mulé",
     createdAt: new Date("2024-06-08"),
     updatedAt: new Date("2024-06-08"),
     userId: 1,
