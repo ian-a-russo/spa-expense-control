@@ -4,7 +4,7 @@
     :fullscreen="mobile"
     height="auto"
     persistent
-    width="350"
+    width="450"
   >
     <FormPerson :loading="loading" @close="emit('close')" @save="save" />
   </v-dialog>

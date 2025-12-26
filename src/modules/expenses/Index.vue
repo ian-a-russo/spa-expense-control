@@ -173,7 +173,6 @@
 </template>
 
 <script lang="ts" setup>
-import { http } from "@/services/http/axios/http";
 import type { IExpense } from "@/services/http/expense/i-expense";
 import DialogConfirmDelete from "@/components/dialogs/DialogConfirmDelete.vue";
 import { notify } from "@/services/http/notify";
@@ -184,6 +183,7 @@ import { usePagination } from "@/composables/usePagination";
 import { DateFormatter } from "@/utils/date-formatter";
 import DialogEditExpense from "./components/DialogEditExpense.vue";
 import DialogCreateExpense from "./components/DialogCreateExpense.vue";
+import { httpCoordinator } from "@/services/http/axios/http-coordinator.http";
 
 const emit = defineEmits<{
   (
@@ -198,148 +198,7 @@ const editDialog = ref<{ open: boolean; item?: IExpense }>({
 });
 const isMobile = computed(() => vuetify.display.mobile.value);
 const loading = ref(false);
-const items = ref<IExpense[]>([
-  {
-    id: 1,
-    name: "Pizza",
-    price: 70.0,
-    categoryId: 1,
-    personId: 1,
-    paymentMethodId: 1,
-    paymentMethod: {
-      id: 1,
-      name: "Cartão de Crédito",
-      createdAt: new Date("2024-06-10"),
-      updatedAt: new Date("2024-06-10"),
-    },
-    person: {
-      id: 1,
-      name: "João Silva",
-      userId: 1,
-      familiarityId: 1,
-      bornAt: new Date("2000-01-01"),
-      createdAt: new Date("2024-06-10"),
-      updatedAt: new Date("2024-06-10"),
-    },
-    category: {
-      id: 1,
-      color: "#FF5733",
-      name: "Alimentação",
-      description: "Despesas relacionadas a alimentação",
-      createdAt: new Date("2024-06-10"),
-      updatedAt: new Date("2024-06-10"),
-    },
-    createdAt: new Date("2024-06-08"),
-    updatedAt: new Date("2024-06-08"),
-    description: "Descrição da compra exemplo",
-    userId: 1,
-  },
-  {
-    id: 2,
-    name: "Sorvete",
-    price: 20.0,
-    categoryId: 1,
-    personId: 1,
-    paymentMethodId: 1,
-    paymentMethod: {
-      id: 1,
-      name: "Cartão de Crédito",
-      createdAt: new Date("2024-06-10"),
-      updatedAt: new Date("2024-06-10"),
-    },
-    person: {
-      id: 1,
-      name: "João Silva",
-      familiarityId: 1,
-      bornAt: new Date("2000-01-01"),
-      userId: 1,
-      createdAt: new Date("2024-06-10"),
-      updatedAt: new Date("2024-06-10"),
-    },
-    category: {
-      id: 1,
-      color: "#FF5733",
-      name: "Alimentação",
-      description: "Despesas relacionadas a alimentação",
-      createdAt: new Date("2024-06-10"),
-      updatedAt: new Date("2024-06-10"),
-    },
-    createdAt: new Date("2024-06-07"),
-    updatedAt: new Date("2024-06-07"),
-    description: "Descrição da compra exemplo",
-    userId: 1,
-  },
-  {
-    id: 3,
-    name: "Café da tarde",
-    price: 50.0,
-    categoryId: 1,
-    personId: 1,
-    paymentMethodId: 1,
-    paymentMethod: {
-      id: 1,
-      name: "Cartão de Crédito",
-      createdAt: new Date("2024-06-10"),
-      updatedAt: new Date("2024-06-10"),
-    },
-    person: {
-      id: 1,
-      name: "João Silva",
-      familiarityId: 1,
-      bornAt: new Date("2000-01-01"),
-      userId: 1,
-      createdAt: new Date("2024-06-10"),
-      updatedAt: new Date("2024-06-10"),
-    },
-    category: {
-      id: 1,
-      color: "#FF5733",
-      name: "Alimentação",
-      description: "Despesas relacionadas a alimentação",
-      createdAt: new Date("2024-06-10"),
-      updatedAt: new Date("2024-06-10"),
-    },
-    createdAt: new Date("2024-06-06"),
-    updatedAt: new Date("2024-06-06"),
-    description: "Descrição da compra exemplo",
-    userId: 1,
-  },
-  {
-    id: 4,
-    name: "Lanche",
-    price: 80.0,
-    categoryId: 1,
-    personId: 1,
-    paymentMethodId: 1,
-    paymentMethod: {
-      id: 1,
-      name: "Cartão de Crédito",
-      createdAt: new Date("2024-06-10"),
-      updatedAt: new Date("2024-06-10"),
-    },
-    person: {
-      id: 1,
-      name: "João Silva",
-      familiarityId: 1,
-      bornAt: new Date("2000-01-01"),
-      userId: 1,
-      createdAt: new Date("2024-06-10"),
-      updatedAt: new Date("2024-06-10"),
-    },
-    category: {
-      id: 1,
-      color: "#FF5733",
-      name: "Alimentação",
-      description: "Despesas relacionadas a alimentação",
-      createdAt: new Date("2024-06-10"),
-      updatedAt: new Date("2024-06-10"),
-    },
-    createdAt: new Date("2024-06-05"),
-    updatedAt: new Date("2024-06-05"),
-    description: "Descrição da compra exemplo",
-    userId: 1,
-  },
-]);
+const items = ref<IExpense[]>([]);
 const itemsLength = ref<number>(0);
 const filter = ref({
   acronym: undefined,
@@ -381,33 +240,33 @@ function openEditDialog(item: IExpense) {
 }
 
 async function loadItems(newOptions?: Options) {
-  // const actuallyOptions = newOptions ? newOptions : options.value;
-  // itemsPerPage.value = actuallyOptions.itemsPerPage as number;
-  // page.value = actuallyOptions.page as number;
-  // loading.value = true;
-  // loading.value = true;
-  // try {
-  //   const response = await http.concessionaria.list({
-  //     ...options.value,
-  //     ...filter.value,
-  //   });
-  //   itemsLength.value = response.meta?.total;
-  //   items.value = response.data;
-  // } finally {
-  //   loading.value = false;
-  // }
+  const actuallyOptions = newOptions ? newOptions : options.value;
+  itemsPerPage.value = actuallyOptions.itemsPerPage as number;
+  page.value = actuallyOptions.page as number;
+  loading.value = true;
+  loading.value = true;
+  try {
+    const response = await httpCoordinator.expense.list({
+      ...options.value,
+      ...filter.value,
+    });
+    itemsLength.value = response.meta?.totalItems;
+    items.value = response.data;
+  } finally {
+    loading.value = false;
+  }
 }
 
-async function deleteItem(concessionaria: IExpense) {
-  // try {
-  //   loading.value = true;
-  //   await http.concessionaria.delete(concessionaria.id);
-  //   notify("Vínculo de concessionária removido com sucesso.", "success");
-  // } catch (error) {
-  //   errorMessages.handler(error);
-  // } finally {
-  //   loading.value = false;
-  // }
+async function deleteItem(expense: IExpense) {
+  try {
+    loading.value = true;
+    await httpCoordinator.expense.delete(expense.id);
+    notify("Gasto removido com sucesso.", "success");
+  } catch (error) {
+    errorMessages.handler(error);
+  } finally {
+    loading.value = false;
+  }
 }
 </script>
 

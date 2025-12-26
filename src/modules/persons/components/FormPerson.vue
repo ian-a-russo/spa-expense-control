@@ -53,6 +53,14 @@
               prepend-inner-icon="streamline-freehand:face-id-male-1"
             />
           </v-col>
+          <v-col cols="12">
+            <v-date-picker
+              width="100%"
+              v-model:model-value="formBody.bornAt"
+              title="Data de Nascimento"
+              :header="formBody.bornAt?.toString() ?? 'Selecione a data'"
+            />
+          </v-col>
         </v-row>
       </v-form>
     </v-card-text>
@@ -87,6 +95,7 @@ import { required } from "@/validations/required.rule";
 export type PersonForm = {
   name?: string;
   familiarityId?: number;
+  bornAt?: Date;
 };
 
 const props = defineProps<{

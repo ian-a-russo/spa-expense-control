@@ -1,7 +1,7 @@
 export type ResponsePaginate<Entity> = {
   data: Entity[];
   meta: {
-    currentePage: number;
+    currentPage: number;
     itensPerPage: number;
     totalItems: number;
     totalPages: number;
