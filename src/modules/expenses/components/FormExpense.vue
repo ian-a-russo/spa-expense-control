@@ -49,7 +49,7 @@
               rounded="xl"
               class="py-1"
               v-model="formBody.personId"
-              :items="[{ id: 1, name: 'José' }]"
+              :items="persons"
               item-title="name"
               item-value="id"
               :rules="[required]"
@@ -66,7 +66,7 @@
               rounded="xl"
               class="py-1"
               v-model="formBody.paymentMethodId"
-              :items="[{ id: 1, name: 'Cartão de Crédito' }]"
+              :items="paymentMethods"
               item-title="name"
               item-value="id"
               :rules="[required]"
@@ -83,8 +83,13 @@
               rounded="xl"
               class="py-1"
               v-model="formBody.categoryId"
-              :items="[{ id: 1, name: 'Alimentação' }]"
-              item-title="name"
+              :items="categories"
+              :item-title="
+                (item) => {
+                  console.log(item);
+                  return item.name;
+                }
+              "
               item-value="id"
               :rules="[required]"
               variant="solo-filled"
@@ -141,7 +146,10 @@
 </template>
 
 <script setup lang="ts">
+import type { ICategory } from "@/services/http/category/i-category";
 import type { IExpense } from "@/services/http/expense/i-expense";
+import type { IPaymentMethod } from "@/services/http/payment-method/i-payment-method";
+import type { IPerson } from "@/services/http/person/i-person";
 import { required } from "@/validations/required.rule";
 
 export type ExpenseForm = {
@@ -157,6 +165,9 @@ export type ExpenseForm = {
 const props = defineProps<{
   item?: IExpense;
   loading: boolean;
+  persons?: IPerson[];
+  categories?: ICategory[];
+  paymentMethods?: IPaymentMethod[];
 }>();
 
 const emit = defineEmits(["save", "close"]);

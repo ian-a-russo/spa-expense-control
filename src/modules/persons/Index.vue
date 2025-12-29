@@ -26,6 +26,7 @@
         class="d-flex align-center justify-end px-4 mt-4 mt-sm-0"
       >
         <DialogCreatePerson
+          :familiarities="familiarities"
           @save="loadItems"
           @close="createDialog = false"
           :dialog="createDialog"
@@ -59,7 +60,6 @@
             class="person-card fill-height rounded-xl bg-surface d-flex flex-column justify-space-between pa-4"
             elevation="3"
           >
-            <!-- Header -->
             <div class="d-flex justify-space-between align-start mb-3">
               <div class="d-flex align-center">
                 <v-avatar size="40" class="mr-3 bg-primary">
@@ -78,7 +78,6 @@
                 </div>
               </div>
 
-              <!-- Delete -->
               <DialogConfirmDelete
                 @delete-success="loadItems"
                 icon="mdi-close"
@@ -88,10 +87,8 @@
               />
             </div>
 
-            <!-- Divider -->
             <v-divider class="my-2" />
 
-            <!-- Info -->
             <div class="d-flex align-center text-body-2 text-medium-emphasis">
               <v-icon size="18" class="mr-2">
                 streamline-freehand:calendar-grid
@@ -99,7 +96,7 @@
               <span>
                 Nascimento:
                 <strong class="text-high-emphasis">
-                  {{ DateFormatter.formatWithoutTime(item.bornAt) }}
+                  {{ DateFormatter.formatWithoutTimezone(item.bornAt as any) }}
                 </strong>
               </span>
             </div>
@@ -116,6 +113,7 @@
       </div>
 
       <DialogEditPerson
+        :familiarities="familiarities"
         :edit-person="editDialog.item"
         @save="loadItems"
         @close="editDialog.open = false"
@@ -170,6 +168,8 @@ import { usePagination } from "@/composables/usePagination";
 import { DateFormatter } from "@/utils/date-formatter";
 import DialogEditPerson from "./components/DialogEditPerson.vue";
 import DialogCreatePerson from "./components/DialogCreatePerson.vue";
+import { httpCoordinator } from "@/services/http/axios/http-coordinator.http";
+import type { IFamiliarity } from "@/services/http/familiarity/i-familiarity";
 
 const emit = defineEmits<{
   (
@@ -177,6 +177,7 @@ const emit = defineEmits<{
     value: { page: number; itemsPerPage: number; sortBy: [] }
   ): void;
 }>();
+const familiarities = ref<IFamiliarity[]>([]);
 const createDialog = ref(false);
 const editDialog = ref<{ open: boolean; item?: IPerson }>({
   open: false,
@@ -184,23 +185,7 @@ const editDialog = ref<{ open: boolean; item?: IPerson }>({
 });
 const isMobile = computed(() => vuetify.display.mobile.value);
 const loading = ref(false);
-const items = ref<IPerson[]>([
-  {
-    id: 1,
-    name: "Mulé",
-    createdAt: new Date("2024-06-08"),
-    updatedAt: new Date("2024-06-08"),
-    userId: 1,
-    bornAt: new Date("2003-09-30"),
-    familiarityId: 1,
-    familiarity: {
-      id: 1,
-      name: "Conjugê",
-      createdAt: new Date("2024-06-01"),
-      updatedAt: new Date("2024-06-01"),
-    },
-  },
-]);
+const items = ref<IPerson[]>([]);
 const itemsLength = ref<number>(0);
 const filter = ref({
   acronym: undefined,
@@ -235,6 +220,8 @@ watch(
 
 onMounted(async () => {
   loadItems();
+
+  familiarities.value = (await httpCoordinator.familiarity.list()) as any;
 });
 
 function openEditDialog(item: IPerson) {
@@ -242,33 +229,33 @@ function openEditDialog(item: IPerson) {
 }
 
 async function loadItems(newOptions?: Options) {
-  // const actuallyOptions = newOptions ? newOptions : options.value;
-  // itemsPerPage.value = actuallyOptions.itemsPerPage as number;
-  // page.value = actuallyOptions.page as number;
-  // loading.value = true;
-  // loading.value = true;
-  // try {
-  //   const response = await http.concessionaria.list({
-  //     ...options.value,
-  //     ...filter.value,
-  //   });
-  //   itemsLength.value = response.meta?.total;
-  //   items.value = response.data;
-  // } finally {
-  //   loading.value = false;
-  // }
+  const actuallyOptions = newOptions ? newOptions : options.value;
+  itemsPerPage.value = actuallyOptions.itemsPerPage as number;
+  page.value = actuallyOptions.page as number;
+  loading.value = true;
+  try {
+    const response = await httpCoordinator.person.list({
+      ...options.value,
+      ...filter.value,
+      includes: "familiarity",
+    });
+    itemsLength.value = response.meta?.totalItems;
+    items.value = response.data;
+  } finally {
+    loading.value = false;
+  }
 }
 
-async function deleteItem(concessionaria: IPerson) {
-  // try {
-  //   loading.value = true;
-  //   await http.concessionaria.delete(concessionaria.id);
-  //   notify("Vínculo de concessionária removido com sucesso.", "success");
-  // } catch (error) {
-  //   errorMessages.handler(error);
-  // } finally {
-  //   loading.value = false;
-  // }
+async function deleteItem(person: IPerson) {
+  try {
+    loading.value = true;
+    await httpCoordinator.person.delete(person.id);
+    notify("Pessoa removida com sucesso.", "success");
+  } catch (error) {
+    errorMessages.handler(error);
+  } finally {
+    loading.value = false;
+  }
 }
 </script>
 

@@ -11,6 +11,9 @@
       :loading="loading"
       @close="emit('close')"
       @save="save"
+      :payment-methods="paymentMethods"
+      :categories="categories"
+      :persons="persons"
     />
   </v-dialog>
 </template>
@@ -23,10 +26,16 @@ import { httpCoordinator } from "@/services/http/axios/http-coordinator.http";
 import type { IExpense } from "@/services/http/expense/i-expense";
 import type { ExpenseForm } from "./FormExpense.vue";
 import FormExpense from "./FormExpense.vue";
+import type { IPerson } from "@/services/http/person/i-person";
+import type { ICategory } from "@/services/http/category/i-category";
+import type { IPaymentMethod } from "@/services/http/payment-method/i-payment-method";
 
 const props = defineProps<{
   editExpense?: IExpense;
   dialog: boolean;
+  persons?: IPerson[];
+  categories?: ICategory[];
+  paymentMethods?: IPaymentMethod[];
 }>();
 
 const { mobile } = useDisplay();

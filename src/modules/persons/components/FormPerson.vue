@@ -35,14 +35,7 @@
               rounded="xl"
               class="py-1"
               v-model="formBody.familiarityId"
-              :items="[
-                { id: 1, name: 'Cônjuge' },
-                { id: 2, name: 'Administrador' },
-                { id: 3, name: 'Filho' },
-                { id: 4, name: 'Parente' },
-                { id: 5, name: 'Amigo' },
-                { id: 6, name: 'Outro' },
-              ]"
+              :items="familiarities"
               item-title="name"
               item-value="id"
               :rules="[required]"
@@ -89,6 +82,7 @@
 </template>
 
 <script setup lang="ts">
+import type { IFamiliarity } from "@/services/http/familiarity/i-familiarity";
 import type { IPerson } from "@/services/http/person/i-person";
 import { required } from "@/validations/required.rule";
 
@@ -101,6 +95,7 @@ export type PersonForm = {
 const props = defineProps<{
   item?: IPerson;
   loading: boolean;
+  familiarities?: IFamiliarity[];
 }>();
 
 const emit = defineEmits(["save", "close"]);

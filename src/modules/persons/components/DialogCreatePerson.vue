@@ -6,7 +6,12 @@
     persistent
     width="450"
   >
-    <FormPerson :loading="loading" @close="emit('close')" @save="save" />
+    <FormPerson
+      :loading="loading"
+      @close="emit('close')"
+      @save="save"
+      :familiarities="familiarities"
+    />
   </v-dialog>
 </template>
 
@@ -17,8 +22,10 @@ import { errorMessages } from "@/services/http/error-messages";
 import { httpCoordinator } from "@/services/http/axios/http-coordinator.http";
 import type { PersonForm } from "./FormPerson.vue";
 import FormPerson from "./FormPerson.vue";
+import type { IFamiliarity } from "@/services/http/familiarity/i-familiarity";
 
 const props = defineProps<{
+  familiarities?: IFamiliarity[];
   dialog: boolean;
 }>();
 

@@ -26,6 +26,9 @@
         class="d-flex align-center justify-end px-4 mt-4 mt-sm-0"
       >
         <DialogCreateExpense
+          :payment-methods="paymentMethods"
+          :categories="categories"
+          :persons="persons"
           @save="loadItems"
           @close="createDialog = false"
           :dialog="createDialog"
@@ -130,6 +133,9 @@
       </div>
 
       <DialogEditExpense
+        :payment-methods="paymentMethods"
+        :categories="categories"
+        :persons="persons"
         :edit-expense="editDialog.item"
         @save="loadItems"
         @close="editDialog.open = false"
@@ -184,6 +190,9 @@ import { DateFormatter } from "@/utils/date-formatter";
 import DialogEditExpense from "./components/DialogEditExpense.vue";
 import DialogCreateExpense from "./components/DialogCreateExpense.vue";
 import { httpCoordinator } from "@/services/http/axios/http-coordinator.http";
+import type { IPaymentMethod } from "@/services/http/payment-method/i-payment-method";
+import type { ICategory } from "@/services/http/category/i-category";
+import type { IPerson } from "@/services/http/person/i-person";
 
 const emit = defineEmits<{
   (
@@ -199,6 +208,9 @@ const editDialog = ref<{ open: boolean; item?: IExpense }>({
 const isMobile = computed(() => vuetify.display.mobile.value);
 const loading = ref(false);
 const items = ref<IExpense[]>([]);
+const paymentMethods = ref<IPaymentMethod[]>([]);
+const categories = ref<ICategory[]>([]);
+const persons = ref<IPerson[]>([]);
 const itemsLength = ref<number>(0);
 const filter = ref({
   acronym: undefined,
@@ -233,6 +245,11 @@ watch(
 
 onMounted(async () => {
   loadItems();
+
+  const personResult = await httpCoordinator.person.list({ itemsPerPage: -1 });
+  persons.value = personResult.data;
+  categories.value = (await httpCoordinator.category.list()) as any;
+  paymentMethods.value = (await httpCoordinator.paymentMethod.list()) as any;
 });
 
 function openEditDialog(item: IExpense) {
@@ -249,6 +266,7 @@ async function loadItems(newOptions?: Options) {
     const response = await httpCoordinator.expense.list({
       ...options.value,
       ...filter.value,
+      includes: "category,paymentMethod,person",
     });
     itemsLength.value = response.meta?.totalItems;
     items.value = response.data;

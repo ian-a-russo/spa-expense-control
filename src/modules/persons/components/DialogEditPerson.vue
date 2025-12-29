@@ -7,6 +7,7 @@
     width="450"
   >
     <FormPerson
+      :familiarities="familiarities"
       :item="editPerson"
       :loading="loading"
       @close="emit('close')"
@@ -23,10 +24,12 @@ import { httpCoordinator } from "@/services/http/axios/http-coordinator.http";
 import type { IPerson } from "@/services/http/person/i-person";
 import type { PersonForm } from "./FormPerson.vue";
 import FormPerson from "./FormPerson.vue";
+import type { IFamiliarity } from "@/services/http/familiarity/i-familiarity";
 
 const props = defineProps<{
   editPerson?: IPerson;
   dialog: boolean;
+  familiarities?: IFamiliarity[];
 }>();
 
 const { mobile } = useDisplay();
