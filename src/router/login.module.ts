@@ -4,7 +4,7 @@ import login from "../modules/login/routes";
 
 export const loginModule: RouteRecordRaw[] = [
   {
-    path: "/login",
+    path: "/",
     redirect: "/login",
     children: [...login],
   },

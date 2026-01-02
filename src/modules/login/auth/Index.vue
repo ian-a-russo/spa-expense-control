@@ -6,12 +6,15 @@
   >
     <v-card
       :width="isMobile ? '90%' : '27rem'"
-      border="md"
       class="pa-8"
       elevation="10"
+      color="background"
     >
       <v-card-text>
-        <v-toolbar class="font-weight-medium text-h5 text-left">
+        <v-toolbar
+          class="font-weight-medium text-h5 text-left"
+          color="transparent"
+        >
           Fazer Login
         </v-toolbar>
         <div v-if="inputError" class="error-text">{{ inputError }}</div>
@@ -23,7 +26,7 @@
           v-model="userEmail"
         >
           <template #label>
-            <v-icon>mdi-account</v-icon>
+            <v-icon>streamline-freehand:business-product-supplier-2</v-icon>
             Email
           </template>
         </v-text-field>
@@ -37,7 +40,7 @@
       <v-card-actions class="d-flex justify-end mt-6 mb-3">
         <v-btn
           :loading="loading"
-          color="blue"
+          color="primary"
           variant="flat"
           rounded="md"
           :disabled="!userEmail"
@@ -74,7 +77,7 @@
             v-model="userPassword"
           >
             <template #label>
-              <v-icon>mdi-lock</v-icon>
+              <v-icon>streamline-freehand:lock-key-1</v-icon>
               Senha
             </template>
           </v-text-field>
@@ -86,7 +89,11 @@
             @click="showPassword = !showPassword"
           >
             <v-icon>
-              {{ showPassword ? "mdi-eye" : "mdi-eye-off" }}
+              {{
+                showPassword
+                  ? "streamline-freehand:view-eye-1"
+                  : "streamline-freehand:view-eye-off"
+              }}
             </v-icon>
           </v-btn>
         </div>
@@ -129,7 +136,10 @@ import {
   userSessionStore,
   type UserOptions,
 } from "@/stores/user-session-store";
+import { useTheme } from "vuetify/lib/composables/theme";
 
+const appTheme = ref("");
+const vuetifyTheme = useTheme();
 const emailIsValid = ref(false);
 const inputError = ref("");
 const userEmail = ref("");
@@ -138,12 +148,17 @@ const showPassword = ref<boolean>(false);
 const router = useRouter();
 const userPassword = ref("");
 
+const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+
 onMounted(() => {
   window.addEventListener("keydown", handleEnterKey);
+  detectTheme();
+  mediaQuery.addEventListener("change", detectTheme);
 });
 
 onBeforeUnmount(() => {
   window.removeEventListener("keydown", handleEnterKey);
+  mediaQuery.removeEventListener("change", detectTheme);
 });
 
 function handleEnterKey(e: KeyboardEvent) {
@@ -168,7 +183,7 @@ async function continueToNextStep() {
     emailIsValid.value = true;
     inputError.value = "";
   } catch (error: any) {
-    inputError.value = error.response.data.message;
+    inputError.value = error?.response?.data?.message;
   } finally {
     loading.value = false;
   }
@@ -187,9 +202,11 @@ async function login() {
 
     const user = await httpCoordinator.auth.me();
 
+    console.log(user);
+
     userSessionStore.setUser(user as UserOptions);
 
-    router.push("/catalog");
+    router.push("/expenses");
   } catch (e) {
     inputError.value = "Conta ou senha incorreta.";
   } finally {
@@ -201,13 +218,32 @@ function returnToPreviousPage() {
   userSessionStore.logout();
   userPassword.value = "";
   emailIsValid.value = false;
+  inputError.value = "";
+}
+
+function detectTheme() {
+  const savedTheme = localStorage.getItem("theme");
+
+  if (savedTheme === "dark" || savedTheme === "light") {
+    appTheme.value = savedTheme;
+
+    vuetifyTheme.global.name.value = appTheme.value;
+
+    return;
+  }
+
+  appTheme.value = window.matchMedia("(prefers-color-scheme: dark)").matches
+    ? "dark"
+    : "light";
+
+  vuetifyTheme.global.name.value = appTheme.value;
 }
 </script>
 
 <style scoped>
 .router {
   text-decoration: none !important;
-  color: #2a9af3 !important;
+  color: rgb(var(--v-theme-primary-lighten-1)) !important;
 }
 
 .router:hover {

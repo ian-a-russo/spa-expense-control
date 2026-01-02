@@ -28,7 +28,7 @@ http.interceptors.response.use(
       router.push("/login");
     }
     if (error.response?.status === 403) {
-      router.push("/catalog");
+      router.push("/expenses");
     }
     return Promise.reject(error);
   }

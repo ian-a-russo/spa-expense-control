@@ -19,19 +19,26 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   const isAuthenticated = !!userSessionStore.token;
-  const requiresAuth = to.meta.requiresAuth as boolean | undefined;
   const allowedRoles = to.meta.roles as string[] | undefined;
 
   if (to.meta.requiresAuth && !isAuthenticated) {
-    next({ path: "/login" });
-  } else if (
+    if (to.path !== "/login") {
+      return next({ path: "/login" });
+    }
+    return next();
+  }
+
+  if (
     allowedRoles?.length &&
     !allowedRoles.includes(userSessionStore.user.role)
   ) {
-    next({ path: "/catalog" });
-  } else {
-    next();
+    if (to.path !== "/expenses") {
+      return next({ path: "/expenses" });
+    }
+    return next();
   }
+
+  next();
 });
 
 export default router;

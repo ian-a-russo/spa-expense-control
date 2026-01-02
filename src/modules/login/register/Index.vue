@@ -52,7 +52,11 @@
               @click="showPassword = !showPassword"
             >
               <v-icon>
-                {{ showPassword ? "mdi-eye" : "mdi-eye-off" }}
+                {{
+                  showPassword
+                    ? "streamline-freehand:view-eye-1"
+                    : "streamline-freehand:view-eye-off"
+                }}
               </v-icon>
             </v-btn>
           </div>
@@ -151,7 +155,7 @@ async function validate() {
       goToLogin();
     }, 1200);
   } catch (error: any) {
-    inputError.value = error.response.data.message;
+    inputError.value = error?.response?.data?.message;
   } finally {
     loading.value = false;
   }
@@ -175,7 +179,7 @@ async function nextStep() {
     userSessionStore.setUser({ ...user.value, role: "user" });
     success.value = true;
   } catch (error: any) {
-    inputError.value = error.response.data.message;
+    inputError.value = error?.response?.data?.message;
   } finally {
     loading.value = false;
   }

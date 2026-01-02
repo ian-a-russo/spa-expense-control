@@ -122,7 +122,6 @@ function toggleNavigation() {
 const isDark = ref(appTheme.value === "dark");
 
 function changeTheme(value: boolean | null) {
-  // value é o novo estado do switch
   isDark.value = value as boolean;
 
   appTheme.value = value ? "dark" : "light";
