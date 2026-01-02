@@ -3,8 +3,13 @@ import { ExpenseHttp } from "./expense.http";
 import { PaymentMethodHttp } from "./payment-method.http";
 import { FamiliarityHttp } from "./familiarity.http";
 import { PersonHttp } from "./person.http";
+import { AuthHttp } from "../auth/auth.http";
 
 class HttpCoordinator {
+  get auth(): AuthHttp {
+    return new AuthHttp();
+  }
+
   get expense(): ExpenseHttp {
     return new ExpenseHttp();
   }

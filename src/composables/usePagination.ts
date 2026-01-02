@@ -36,6 +36,7 @@ export function usePagination<T>(
 
   const pageCount = computed(() => {
     const total = unref(props.itemsLength) ?? unref(props.items).length;
+    if (!total) return 0;
     if (itemsPerPage.value === -1) return 1;
     return Math.ceil(total / itemsPerPage.value);
   });
